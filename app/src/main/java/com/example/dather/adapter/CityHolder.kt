@@ -5,9 +5,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.dather.City
 import com.example.dather.R
-import com.example.dather.pojo.City
-import com.example.dather.utils.OWMUtils
 
 class CityHolder(view: View) : RecyclerView.ViewHolder(view) {
     var textCityName: TextView
@@ -23,18 +22,10 @@ class CityHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(city: City) {
         textCityName.text = city.name
-        //TODO: hot: single object (ref)
-        textCityWDescription.text = city.weather[0].description
-        //TODO: hot: single object (ref)
-        if (city.weather[0].owmIconUri != null) {
-
-            Glide.with(itemView).load(
-                OWMUtils.getIconFromDescription(
-                    //TODO: hot: single object (ref)
-                    city.weather[0].owmIconUri
-                )
-            ).into(imageCityIcon)
-        }
+        textCityWDescription.text = city.weather.description
+        Glide.with(itemView).load(
+                city.weather.iconUri
+        ).into(imageCityIcon)
 
     }
 }

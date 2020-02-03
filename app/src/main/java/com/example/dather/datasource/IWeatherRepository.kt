@@ -1,7 +1,7 @@
 package com.example.dather.datasource
 
 import androidx.lifecycle.LiveData
-import com.example.dather.pojo.City
+import com.example.dather.City
 
 const val DEFAULT_LIMIT = 20
 const val DEFAULT_LANGUAGE = "ru"

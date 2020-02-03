@@ -78,7 +78,7 @@ class GMapFragment : SupportMapFragment() {
     fun addWeatherMarker(marker: Marker) {
         HostActivity.getCity(HostActivity.latitude, HostActivity.longitude).observe(this, Observer {
             marker.title = it.name
-            marker.snippet = it.weather[0].description
+            marker.snippet = it.weather.description
         })
     }
 

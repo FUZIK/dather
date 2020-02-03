@@ -3,8 +3,8 @@ package com.example.dather.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.dather.City
 import com.example.dather.R
-import com.example.dather.pojo.City
 
 class CitiesAdapter : RecyclerView.Adapter<CityHolder>() {
     var cities: List<City> = emptyList()

@@ -5,13 +5,13 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import com.example.dather.City
 import com.example.dather.R
-import com.example.dather.datasource.WRetroRepo
+import com.example.dather.datasource.openweathermap.WRetroRepo
 import com.example.dather.fragment.CitiesFragment
 import com.example.dather.fragment.GMapFragment
 import com.example.dather.fragment.KEY_LATITUDE
 import com.example.dather.fragment.KEY_LONGITUDE
-import com.example.dather.pojo.City
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 const val DEFAULT_LATITUDE = 47.2363064
