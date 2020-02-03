@@ -1,0 +1,22 @@
+package com.example.dather.viewmodel
+
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.example.dather.activity.DEFAULT_LATITUDE
+import com.example.dather.activity.DEFAULT_LONGITUDE
+import com.example.dather.activity.HostActivity
+import com.example.dather.pojo.City
+
+class CitiesViewModel : ViewModel() {
+    var latitude = DEFAULT_LATITUDE
+    var longitude = DEFAULT_LONGITUDE
+
+    fun getCitiesAroundLastPosition() =
+        HostActivity.instance.repository.getCitiesAround(latitude, longitude)
+
+    fun getCity() =
+        HostActivity.instance.repository.getCity(latitude, longitude)
+
+}

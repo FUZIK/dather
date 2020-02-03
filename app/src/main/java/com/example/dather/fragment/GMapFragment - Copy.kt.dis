@@ -1,0 +1,98 @@
+package com.example.dather.fragment
+
+import android.os.Bundle
+import android.util.Log
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.example.dather.viewmodel.CitiesViewModel
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+
+const val KEY_LATITUDE = "latitude"
+const val KEY_LONGITUDE = "longitude"
+
+class GMapFragment : SupportMapFragment() {
+    lateinit var googleMap: GoogleMap
+    lateinit var mPresenter: GMapFragmentPresenter
+    lateinit var citiesModel: CitiesViewModel
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        citiesModel = ViewModelProviders.of(this).get(CitiesViewModel::class.java)
+
+        //TODO: replace `as viewModels()` from activity-ktx
+        mPresenter = GMapFragmentPresenter(this)
+
+        getMapAsync {
+            googleMap = it
+
+            it.setOnMapClickListener {latLng ->
+                mPresenter.onClickOnMap(latLng)
+            }
+//            it.setOnMarkerClickListener {marker ->
+//                mPresenter.onClickOnMarker(marker)
+//                return@setOnMarkerClickListener true
+//            }
+
+            val args = arguments
+            if (args != null) {
+                if (args.containsKey(KEY_LATITUDE)
+                    && args.containsKey(KEY_LONGITUDE)) {
+                    addWeatherMarker(LatLng(args.getDouble(KEY_LATITUDE), args.getDouble(KEY_LONGITUDE)))
+                }
+            }
+        }
+    }
+
+    fun updateModel(position: LatLng) {
+        citiesModel.latitude = position.latitude
+        citiesModel.longitude = position.longitude
+    }
+
+    fun addWeatherMarker(position: LatLng) {
+        val marker = MarkerOptions()
+        marker.position(position)
+        marker.snippet("snippet?")
+        marker.title("todo: weather description displayed")
+        googleMap.addMarker(marker)
+        citiesModel.getCity().observe(this, Observer {
+            marker.title(it.name)
+            //TODO: hot: single object (ref)
+            if (it.weather.isNotEmpty()) {
+                marker.snippet(it.weather[0].description)
+            }
+        })
+    }
+
+    fun clearAllMarkers() {
+        googleMap.clear()
+    }
+}
+
+
+interface IGMapFragmentPresenter {
+    fun onClickOnMap(position: LatLng)
+//    fun onClickOnMarker(marker: Marker)
+}
+
+
+class GMapFragmentPresenter(
+    val gMapFragment: GMapFragment
+
+) : IGMapFragmentPresenter {
+    override fun onClickOnMap(position: LatLng) {
+        gMapFragment.updateModel(position)
+        gMapFragment.clearAllMarkers()
+        gMapFragment.addWeatherMarker(position)
+    }
+//    override fun onClickOnMarker(marker: Marker) {
+//        if (marker.isInfoWindowShown) {
+//            marker.hideInfoWindow()
+//        } else {
+//            marker.showInfoWindow()
+//        }
+//    }
+}
