@@ -6,7 +6,7 @@ import com.example.dather.City
 const val DEFAULT_LIMIT = 20
 const val DEFAULT_LANGUAGE = "ru"
 
-interface IWRepository {
+interface IWeatherRepository {
     fun getCity(latitude: Double,
                 longitude: Double,
                 lang: String = DEFAULT_LANGUAGE

@@ -3,8 +3,9 @@
     package="com.example.dather">
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
 
     <application
         android:allowBackup="false"
@@ -18,7 +19,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDfIJFlqanzf-09UwzvoDpCexa9icRq-JE" />
 
-        <activity android:name=".activity.HostActivity">
+        <activity android:name=".HostActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

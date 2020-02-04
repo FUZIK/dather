@@ -1,4 +1,4 @@
-package com.example.dather.utils
+package com.example.dather.utility
 
 const val OWM_ICON = "http://openweathermap.org/img/wn"
 

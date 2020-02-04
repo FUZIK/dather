@@ -1,6 +1,7 @@
 package com.example.dather.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dather.R
-import com.example.dather.activity.HostActivity
 import com.example.dather.adapter.CitiesAdapter
-import com.example.dather.adapter.CityHolder
+import com.example.dather.datasource.Repository
 
 
 class CitiesFragment : Fragment() {
@@ -19,11 +19,10 @@ class CitiesFragment : Fragment() {
     lateinit var progressBar: ProgressBar
 
     private val defaultItemClickListener = object : ItemClickListener {
+        //TODO finish animation correctly
         override fun onClick(view: View, position: Int) {
-//            println("HEIGHT: " + view.height)
-//            println("HEIGHT: " + view.height + view.height/4)
-//            view.layoutParams = RecyclerView.LayoutParams(view.width, view.height + view.height/4)
-            (recyclerView.getChildViewHolder(view) as CityHolder).showDescription(true)
+            view.scaleX = 1.2f
+            (recyclerView.getChildViewHolder(view) as CitiesAdapter.CityHolder).showDescription(true)
         }
     }
 
@@ -49,10 +48,12 @@ class CitiesFragment : Fragment() {
         recyclerView.adapter = citiesAdapter
         setOnItemClickListener(defaultItemClickListener)
 
-        HostActivity.getCitiesAround(HostActivity.latitude, HostActivity.longitude).observe(this, Observer {
-            citiesAdapter.cities = it
-            progressBar.visibility = View.INVISIBLE
+        Repository.getPositionRepo().getLastPosition().observe(this, Observer {
+            Repository.getWeatherRepo().getCitiesAround(it.latitude, it.longitude).observe(this, Observer {
+                citiesAdapter.cities = it
+                Log.e("CITIES", "updated! ${it.size}")
+                progressBar.visibility = View.INVISIBLE
+            })
         })
-
     }
 }

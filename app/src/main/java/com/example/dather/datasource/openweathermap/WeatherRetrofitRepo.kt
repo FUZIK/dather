@@ -5,7 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.dather.City
 import com.example.dather.Weather
-import com.example.dather.datasource.IWRepository
+import com.example.dather.datasource.IWeatherRepository
+import com.example.dather.utility.OWMUtils
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
@@ -21,7 +22,7 @@ const val OWM_BASE_URL = "http://api.openweathermap.org/"
 
 //TODO: change gson to Jackson for ex
 
-class WRetroRepo : IWRepository {
+class WRetroRepo : IWeatherRepository {
     private val retrofit = Retrofit.Builder()
         .baseUrl(OWM_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
@@ -32,7 +33,7 @@ class WRetroRepo : IWRepository {
         val liveData = MutableLiveData<City>()
         owmService.getCity(latitude, longitude, lang).enqueue(object : Callback<OWMObject.OWMResult> {
             override fun onResponse(call: Call<OWMObject.OWMResult>, response: Response<OWMObject.OWMResult>) {
-                liveData.value = resultToCity(response.body() ?: return)
+                liveData.value = converteResultToCity(response.body() ?: return)
             }
             override fun onFailure(call: Call<OWMObject.OWMResult>, t: Throwable) {
                 Log.e(this.javaClass.name, t.message!!)
@@ -46,7 +47,7 @@ class WRetroRepo : IWRepository {
         owmService.getCitiesAround(latitude, longitude, limit, lang).enqueue(object : Callback<ResultList> {
             override fun onResponse(call: Call<ResultList>, response: Response<ResultList>) {
                 response.body()?.let { result ->
-                    liveData.postValue(result.list.map{ resultToCity(it) })
+                    liveData.postValue(result.list.map{ converteResultToCity(it) })
                 }
             }
             override fun onFailure(call: Call<ResultList>, t: Throwable) {
@@ -57,12 +58,22 @@ class WRetroRepo : IWRepository {
     }
 
     companion object {
-        fun resultToCity(result: OWMObject.OWMResult) =
+        @Volatile private var instance: WRetroRepo? = null
+
+        fun instance(): WRetroRepo =
+            instance ?: synchronized(this) {
+                instance ?: WRetroRepo().also {
+                    instance = it
+                }
+            }
+
+
+        fun converteResultToCity(result: OWMObject.OWMResult) =
             City(
                 result.name,
                 Weather(
                     result.weather[0].description,
-                    result.weather[0].icon
+                    OWMUtils.getIconFromDescription(result.weather[0].icon)
                 )
             )
     }

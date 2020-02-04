@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:title="Карта" android:checked="true"
         android:id="@+id/menu_item_map"
-        android:icon="@color/common_google_signin_btn_text_dark_default"/>
+        android:icon="@drawable/ic_map_black_24dp"/>
     <item android:title="Город"
         android:id="@+id/menu_item_city"
-        android:icon="@color/common_google_signin_btn_text_dark_default"/>
+        android:icon="@drawable/ic_photo_library_black_24dp"/>
 </menu>

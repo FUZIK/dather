@@ -5,21 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/host_container"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/host_pager"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/navigation"
-        app:layout_constraintTop_toTopOf="parent" />
-
-<!--TODO: one step to save fragment state-->
-<!--    <androidx.viewpager.widget.ViewPager-->
-<!--        android:id="@+id/host_pager"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" />-->
+        android:layout_height="match_parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
+        app:backgroundTint="@color/design_default_color_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
