@@ -3,6 +3,7 @@ package com.example.dather.fragment
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.example.dather.datasource.Repository
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -13,7 +14,8 @@ import com.google.android.gms.maps.model.MarkerOptions
 const val KEY_LATITUDE = "latitude"
 const val KEY_LONGITUDE = "longitude"
 const val STRING_IN_PROGRESS = "Loading.."
-const val MARKER_CITY_COLOR = 111
+const val MARKER_CITY_COLOR = 222f
+const val DEFAULT_CAM_ZOOM = 7f
 
 class GMapFragment : SupportMapFragment() {
     private lateinit var googleMap: GoogleMap
@@ -26,12 +28,18 @@ class GMapFragment : SupportMapFragment() {
             googleMap = it
 
             it.setOnMapClickListener { latLng ->
-                googleMap.clear()
-                addWeatherMarkers(latLng.latitude, latLng.longitude)
+                doClickOnMap(latLng.latitude, latLng.longitude)
             }
         }
     }
 
+    fun doClickOnMap(latitude: Double, longitude: Double, moveCam: Boolean = false) {
+        googleMap.clear()
+        addWeatherMarkers(latitude, longitude)
+        if (moveCam) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), DEFAULT_CAM_ZOOM))
+        }
+    }
 
     fun addMarker(title: String, description: String, latitude: Double, longitude: Double, color: Float? = null): Marker {
         val marker = MarkerOptions()
@@ -60,7 +68,7 @@ class GMapFragment : SupportMapFragment() {
                         city.weather.description,
                         city.latitude,
                         city.longitude,
-                        222f
+                        MARKER_CITY_COLOR
                     )
                 }
             }

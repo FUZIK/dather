@@ -34,56 +34,78 @@ class HostActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_host)
 
-        // TODO (copy-paste code) recode next')
-        // ~copy-paste code
-        ActivityCompat.requestPermissions (
-            this,
-            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
-            44
-        )
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-                LocationManager.NETWORK_PROVIDER)) {
-                var mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-                mFusedLocationClient.lastLocation.addOnCompleteListener { task ->
-                    val location = task.result
-                    Log.e("LOCATION_GET", "${location == null}")
-                    if (location == null) {
-                        val mLocationRequest = LocationRequest()
-                        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                        mLocationRequest.interval = 0
-                        mLocationRequest.fastestInterval = 0
-                        mLocationRequest.numUpdates = 1
-                        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-                        mFusedLocationClient.requestLocationUpdates(
-                            mLocationRequest, object : LocationCallback() {
-                                override fun onLocationResult(locResult: LocationResult?) {
-                                    Log.e("LOCATION_GET", "${locResult == null}")
-                                    if (locResult != null) {
-                                        val currentLocation = locResult.lastLocation
-                                        Log.e("LOCATION_GET", "done ${currentLocation.latitude}")
-                                        citiesRepo.getCitiesAround(currentLocation.latitude, currentLocation.longitude)
+        if (savedInstanceState == null) {
+            // TODO (copy-paste code) recode next')
+            // TODO: not work
+            // ~copy-paste code
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                44
+            )
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+                        LocationManager.NETWORK_PROVIDER
+                    )
+                ) {
+                    var mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+                    mFusedLocationClient.lastLocation.addOnCompleteListener { task ->
+                        val location = task.result
+                        Log.e("LOCATION_GET", "${location == null}")
+                        if (location == null) {
+                            val mLocationRequest = LocationRequest()
+                            mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                            mLocationRequest.interval = 0
+                            mLocationRequest.fastestInterval = 0
+                            mLocationRequest.numUpdates = 1
+                            mFusedLocationClient =
+                                LocationServices.getFusedLocationProviderClient(this)
+                            mFusedLocationClient.requestLocationUpdates(
+                                mLocationRequest, object : LocationCallback() {
+                                    override fun onLocationResult(locResult: LocationResult?) {
+                                        Log.e("LOCATION_GET", "${locResult == null}")
+                                        if (locResult != null) {
+                                            val currentLocation = locResult.lastLocation
+                                            Log.e(
+                                                "LOCATION_GET",
+                                                "done ${currentLocation.latitude}"
+                                            )
+                                            citiesRepo.getCitiesAround(
+                                                currentLocation.latitude,
+                                                currentLocation.longitude
+                                            )
+                                        }
                                     }
-                                }
-                            },
-                            Looper.myLooper()
-                        )
-                    } else {
-                        citiesRepo.getCitiesAround(location.latitude, location.longitude)
+                                },
+                                Looper.myLooper()
+                            )
+                        } else {
+                            citiesRepo.getCitiesAround(location.latitude, location.longitude)
+                        }
                     }
                 }
             }
+            // end of ~copy-paste code
         }
-        // end of ~copy-paste code
 
         viewPager = findViewById(R.id.host_pager)
         viewPager.isUserInputEnabled = false
-        viewPager.adapter = PA(this)
+        viewPager.adapter = BottomMenuPagerAdapter(this)
 
         val navigation: BottomNavigationView = findViewById(R.id.navigation)
-        navigation.setOnNavigationItemSelectedListener { it ->
+        navigation.setOnNavigationItemSelectedListener {
             when(it.itemId) {
                 R.id.menu_item_map -> {
                     viewPager.setCurrentItem(MAP_FRAGMENT_I, true)
@@ -101,7 +123,7 @@ class HostActivity : FragmentActivity() {
         }
     }
 
-    private inner class PA(fm: FragmentActivity) : FragmentStateAdapter(fm) {
+    private inner class BottomMenuPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
         override fun getItemCount() = FRAGMENT_COUNT
 
         override fun createFragment(position: Int): Fragment {

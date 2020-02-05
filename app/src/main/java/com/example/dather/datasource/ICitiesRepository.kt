@@ -6,6 +6,9 @@ import com.example.dather.City
 const val DEFAULT_LIMIT = 20
 const val DEFAULT_LANGUAGE = "ru"
 
+const val DEFAULT_LATITUDE = 47.24
+const val DEFAULT_LONGITUDE = 39.71
+
 interface ICitiesRepository {
 
     fun getCity(latitude: Double,
