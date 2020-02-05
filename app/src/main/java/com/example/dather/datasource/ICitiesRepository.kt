@@ -6,11 +6,14 @@ import com.example.dather.City
 const val DEFAULT_LIMIT = 20
 const val DEFAULT_LANGUAGE = "ru"
 
-interface IWeatherRepository {
+interface ICitiesRepository {
+
     fun getCity(latitude: Double,
                 longitude: Double,
                 lang: String = DEFAULT_LANGUAGE
     ): LiveData<City>
+
+    fun getLastLoadedCities(): LiveData<List<City>>
 
     fun getCitiesAround(latitude: Double,
                         longitude: Double,

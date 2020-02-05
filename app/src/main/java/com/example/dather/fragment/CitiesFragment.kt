@@ -15,13 +15,13 @@ import com.example.dather.datasource.Repository
 
 
 class CitiesFragment : Fragment() {
-    lateinit var recyclerView: RecyclerView
-    lateinit var progressBar: ProgressBar
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
 
     private val defaultItemClickListener = object : ItemClickListener {
         //TODO finish animation correctly
         override fun onClick(view: View, position: Int) {
-            view.scaleX = 1.2f
+            view.scaleY = 1.3f
             (recyclerView.getChildViewHolder(view) as CitiesAdapter.CityHolder).showDescription(true)
         }
     }
@@ -48,12 +48,12 @@ class CitiesFragment : Fragment() {
         recyclerView.adapter = citiesAdapter
         setOnItemClickListener(defaultItemClickListener)
 
-        Repository.getPositionRepo().getLastPosition().observe(this, Observer {
-            Repository.getWeatherRepo().getCitiesAround(it.latitude, it.longitude).observe(this, Observer {
+        Repository.getCitiesRepo().getLastLoadedCities().observe(this, Observer {
+            it?.let {
                 citiesAdapter.cities = it
                 Log.e("CITIES", "updated! ${it.size}")
                 progressBar.visibility = View.INVISIBLE
-            })
+            }
         })
     }
 }

@@ -19,7 +19,6 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -28,8 +27,8 @@ const val MAP_FRAGMENT_I = 0
 const val CITIES_FRAGMENT_I = 1
 
 class HostActivity : FragmentActivity() {
-    lateinit var viewPager: ViewPager2
-    val postionRepo = Repository.getPositionRepo()
+    private lateinit var viewPager: ViewPager2
+    private val citiesRepo = Repository.getCitiesRepo()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,19 +63,15 @@ class HostActivity : FragmentActivity() {
                                     Log.e("LOCATION_GET", "${locResult == null}")
                                     if (locResult != null) {
                                         val currentLocation = locResult.lastLocation
-                                        val currentPosition = LatLng(currentLocation.latitude, currentLocation.longitude)
                                         Log.e("LOCATION_GET", "done ${currentLocation.latitude}")
-                                        val lastPosition = Repository.getPositionRepo().getLastPosition().value
-                                        if (!currentPosition.equals(lastPosition)) {
-                                            postionRepo.setLastPosition(currentPosition)
-                                        }
+                                        citiesRepo.getCitiesAround(currentLocation.latitude, currentLocation.longitude)
                                     }
                                 }
                             },
                             Looper.myLooper()
                         )
                     } else {
-                        postionRepo.setLastPosition(LatLng(location.latitude, location.longitude))
+                        citiesRepo.getCitiesAround(location.latitude, location.longitude)
                     }
                 }
             }
