@@ -11,16 +11,18 @@ const val DEFAULT_LONGITUDE = 39.71
 
 interface ICitiesRepository {
 
-    fun getCity(latitude: Double,
-                longitude: Double,
-                lang: String = DEFAULT_LANGUAGE
+    fun getCity(
+        latitude: Double,
+        longitude: Double,
+        lang: String = DEFAULT_LANGUAGE
     ): LiveData<City>
 
     fun getLastLoadedCities(): LiveData<List<City>>
 
-    fun getCitiesAround(latitude: Double,
-                        longitude: Double,
-                        limit: Int = DEFAULT_LIMIT,
-                        lang: String = DEFAULT_LANGUAGE
+    fun getCitiesAround(
+        latitude: Double,
+        longitude: Double,
+        limit: Int = DEFAULT_LIMIT,
+        lang: String = DEFAULT_LANGUAGE
     ): LiveData<List<City>>
 }

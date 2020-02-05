@@ -32,53 +32,73 @@ class CitiesRetroRepo : ICitiesRepository {
 
     override fun getCity(latitude: Double, longitude: Double, lang: String): LiveData<City> {
         val liveData = MutableLiveData<City>()
-        owmService.getCity(latitude, longitude, lang).enqueue(object : Callback<OWMObject.OWMResult> {
-            override fun onResponse(call: Call<OWMObject.OWMResult>, response: Response<OWMObject.OWMResult>) {
-                liveData.value = converteResultToCity(response.body() ?: return)
-            }
-            override fun onFailure(call: Call<OWMObject.OWMResult>, t: Throwable) {
-                Log.e(this.javaClass.name, t.message!!)
-            }
-        })
+        owmService.getCity(latitude, longitude, lang)
+            .enqueue(object : Callback<OWMObject.OWMResult> {
+                override fun onResponse(
+                    call: Call<OWMObject.OWMResult>,
+                    response: Response<OWMObject.OWMResult>
+                ) {
+                    liveData.value = converteResultToCity(response.body() ?: return)
+                }
+
+                override fun onFailure(call: Call<OWMObject.OWMResult>, t: Throwable) {
+                    Log.e(this.javaClass.name, t.message!!)
+                }
+            })
         return liveData
     }
 
     override fun getLastLoadedCities(): LiveData<List<City>> = lastLoadedCities
 
-    override fun getCitiesAround(latitude: Double, longitude: Double, limit: Int, lang: String): LiveData<List<City>> {
+    override fun getCitiesAround(
+        latitude: Double,
+        longitude: Double,
+        limit: Int,
+        lang: String
+    ): LiveData<List<City>> {
         val liveData = MutableLiveData<List<City>>()
-        owmService.getCitiesAround(latitude, longitude, limit, lang).enqueue(object : Callback<ResultList> {
-            override fun onResponse(call: Call<ResultList>, response: Response<ResultList>) {
-                response.body()?.let { result ->
-                    liveData.value = result.list.map {
-                        converteResultToCity(it)
+        owmService.getCitiesAround(latitude, longitude, limit, lang)
+            .enqueue(object : Callback<ResultList> {
+                override fun onResponse(call: Call<ResultList>, response: Response<ResultList>) {
+                    var cities = emptyList<City>()
+                    if (response.body() == null) {
+
                     }
-                    lastLoadedCities.value = liveData.value
+                    response.body()?.let { result ->
+                        liveData.value = result.list.map {
+                            converteResultToCity(it)
+                        }
+                        lastLoadedCities.value = liveData.value
+                    }
                 }
-            }
-            override fun onFailure(call: Call<ResultList>, t: Throwable) {
-                Log.e(this.javaClass.name, t.message!!)
-            }
-        })
+
+                override fun onFailure(call: Call<ResultList>, t: Throwable) {
+                    Log.e(this.javaClass.name, t.message!!)
+                }
+            })
         return liveData
     }
 
     private interface IOWMService {
         //TODO: return Cities
         @GET("/data/2.5/find")
-        fun getCitiesAround(@Query("lat") latitude: Double,
-                            @Query("lon") longitude: Double,
-                            @Query("cnt") limit: Int,
-                            @Query("lang") lang: String,
-                            @Query("appid") apiKey: String = OWM_API_KEY): Call<ResultList>
+        fun getCitiesAround(
+            @Query("lat") latitude: Double,
+            @Query("lon") longitude: Double,
+            @Query("cnt") limit: Int,
+            @Query("lang") lang: String,
+            @Query("appid") apiKey: String = OWM_API_KEY
+        ): Call<ResultList>
 
         //TODO: return Weather
         //TODO: getWeatherAtLoc
         @GET("/data/2.5/weather")
-        fun getCity(@Query("lat") latitude: Double,
-                    @Query("lon") longitude: Double,
-                    @Query("lang") lang: String,
-                    @Query("appid") apiKey: String = OWM_API_KEY): Call<OWMObject.OWMResult>
+        fun getCity(
+            @Query("lat") latitude: Double,
+            @Query("lon") longitude: Double,
+            @Query("lang") lang: String,
+            @Query("appid") apiKey: String = OWM_API_KEY
+        ): Call<OWMObject.OWMResult>
     }
 
     private data class ResultList(
@@ -88,7 +108,8 @@ class CitiesRetroRepo : ICitiesRepository {
     )
 
     companion object {
-        @Volatile private var instance: CitiesRetroRepo? = null
+        @Volatile
+        private var instance: CitiesRetroRepo? = null
 
         fun instance(): CitiesRetroRepo =
             instance ?: synchronized(this) {

@@ -19,6 +19,7 @@ public final class OWMObject {
             this.all = all;
         }
     }
+
     public static class Coord {
         @SerializedName("lon")
         @Expose

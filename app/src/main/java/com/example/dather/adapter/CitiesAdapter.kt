@@ -12,13 +12,14 @@ import com.example.dather.R
 
 class CitiesAdapter : RecyclerView.Adapter<CitiesAdapter.CityHolder>() {
     var cities: List<City> = emptyList()
-    set(value) {
-        field = value
-        notifyDataSetChanged()
-    }
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_city, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.fragment_city, parent, false)
         return CityHolder(view)
     }
 
@@ -30,12 +31,9 @@ class CitiesAdapter : RecyclerView.Adapter<CitiesAdapter.CityHolder>() {
     }
 
     inner class CityHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var textCityName: TextView
-                = view.findViewById(R.id.text_city_name)
-        var textCityWDescription: TextView
-                = view.findViewById(R.id.text_city_weather_description)
-        var imageCityIcon: ImageView
-                = view.findViewById(R.id.city_weather_icon)
+        var textCityName: TextView = view.findViewById(R.id.text_city_name)
+        var textCityWDescription: TextView = view.findViewById(R.id.text_city_weather_description)
+        var imageCityIcon: ImageView = view.findViewById(R.id.city_weather_icon)
 
         fun showDescription(flag: Boolean) {
             textCityWDescription.visibility = if (flag) View.VISIBLE else View.GONE

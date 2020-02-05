@@ -12,9 +12,9 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
-        app:backgroundTint="@color/design_default_color_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:backgroundTint="@color/design_default_color_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/main_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

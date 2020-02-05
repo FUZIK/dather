@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.get
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -37,7 +38,8 @@ class CitiesFragment : Fragment() {
         //TODO: this is hot fix for animation
         fun resize(view: View, flag: Boolean) {
             val cp = view.layoutParams
-            cp.height = if (flag) (view.height * 1.2).toInt() else ViewGroup.LayoutParams.WRAP_CONTENT
+            cp.height =
+                if (flag) (view.height * 1.2).toInt() else ViewGroup.LayoutParams.WRAP_CONTENT
             (recyclerView.getChildViewHolder(view) as CitiesAdapter.CityHolder).showDescription(flag)
             view.layoutParams = cp
         }
@@ -45,7 +47,8 @@ class CitiesFragment : Fragment() {
         //TODO: this is hot fix for animation
         fun clear() {
             iM.forEach {
-                resize(recyclerView[it.key], false)
+                if (recyclerView.size >= it.key)
+                    resize(recyclerView[it.key], false)
             }
             iM.clear()
         }
